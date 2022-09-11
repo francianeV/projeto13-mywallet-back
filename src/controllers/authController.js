@@ -59,12 +59,15 @@ const signIn = async (req, res) => {
 
         if(user && passwordIsValid) {
             const token = uuid();
+            const name = user.name;
             db.collection('sessions').insertOne({
                                                   token,
                                                   userId: user._id,
                                                 });
-        
-            return res.send(token)
+            const body = {token, name}
+                                                
+            return res.send(body)
+            
         }else{
             return res.sendStatus(401);
         }
