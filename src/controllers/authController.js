@@ -54,13 +54,17 @@ const signIn = async (req, res) => {
 
     try{
         const user = await db.collection('users').findOne({email});
+
+        if(!user){
+            return res.status(422).send('Email ou senha inválidos!');
+        }
         
         const passwordIsValid = bcrypt.compareSync(password, user.password);
 
         if(user && passwordIsValid) {
             const token = uuid();
             const name = user.name;
-            db.collection('sessions').insertOne({
+            await db.collection('sessions').insertOne({
                                                   token,
                                                   userId: user._id,
                                                 });
